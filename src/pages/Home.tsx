@@ -226,10 +226,6 @@ const Home = () => {
                     </motion.div>
                 </div>
             </section>
-
-            {/* Schedule Section */}
-            <ScheduleSection />
-
         </Layout>
     );
 };
