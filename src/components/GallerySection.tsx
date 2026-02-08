@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Shuffle, ChevronUp } from "lucide-react";
+import { getPhotos } from "@/lib/dataStore";
 
-const allImageUrls = [
+// Default photos (hardcoded)
+const defaultImageUrls = [
   "https://pbs.twimg.com/media/G-4HUVgW8AAk4W4?format=jpg&name=medium",
   "https://pbs.twimg.com/media/G-8MJjUWoAAZ9VS?format=jpg&name=medium",
   "https://pbs.twimg.com/media/G-9RAmdXcAA5xgi?format=jpg&name=medium",
@@ -45,7 +47,6 @@ const allImageUrls = [
   "https://pbs.twimg.com/media/GsLiVWJaUAYyAmP?format=jpg&name=medium",
   "https://pbs.twimg.com/media/GsLiVWMaUAANupj?format=jpg&name=medium",
   "https://pbs.twimg.com/media/GsLiVWSaUAIN9pU?format=jpg&name=medium",
-
 ];
 
 const IMAGES_PER_PAGE = 23;
@@ -55,13 +56,29 @@ const GallerySection = () => {
   const [displayedImages, setDisplayedImages] = useState(IMAGES_PER_PAGE);
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [shuffledImages, setShuffledImages] = useState(allImageUrls);
+  const [allImages, setAllImages] = useState<string[]>(defaultImageUrls);
+  const [shuffledImages, setShuffledImages] = useState<string[]>(defaultImageUrls);
+
+  // Load photos from admin on mount
+  useEffect(() => {
+    const loadPhotos = async () => {
+      const adminPhotos = await getPhotos();
+      const adminUrls = adminPhotos.map(p => p.url);
+      // Combine admin photos (first) with default photos
+      const combined = [...adminUrls, ...defaultImageUrls];
+      // Remove duplicates
+      const unique = [...new Set(combined)];
+      setAllImages(unique);
+      setShuffledImages(unique);
+    };
+    loadPhotos();
+  }, []);
 
   const shuffleImages = useCallback(() => {
-    const shuffled = [...allImageUrls].sort(() => Math.random() - 0.5);
+    const shuffled = [...allImages].sort(() => Math.random() - 0.5);
     setShuffledImages(shuffled);
     setDisplayedImages(IMAGES_PER_PAGE);
-  }, []);
+  }, [allImages]);
 
   useEffect(() => {
     const handleScroll = () => {

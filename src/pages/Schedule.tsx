@@ -1,53 +1,8 @@
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Clock, ExternalLink, Sparkles } from "lucide-react";
-
-// --- Helper Function to Add Events ---
-const createEvent = (
-    title: string,
-    date: string,
-    time: string,
-    location: string,
-    type: "Concert" | "Fan Event" | "TV" | "Special" | "Release",
-    featured: boolean = false,
-    link?: string
-) => ({
-    id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    title,
-    date,
-    time,
-    location,
-    type,
-    featured,
-    link
-});
-
-// --- Event Data ---
-const events = [
-    createEvent(
-        "Video call with Intan",
-        "Feb 8, 2026",
-        "12:45 WIB",
-        "Online",
-        "Fan Event",
-        true,
-        "https://jkt48.com/twentyseventhsinglepb?lang=id"
-    ),
-    createEvent(
-        "JKT48 Theater Show",
-        "Feb 15, 2026",
-        "19:00 WIB",
-        "JKT48 Theater, fX Sudirman",
-        "Concert",
-        true,
-        "https://jkt48.com"
-    )
-];
-
-// --- Sort events by date ---
-const sortedEvents = [...events].sort((a, b) => {
-    return new Date(a.date).getTime() - new Date(b.date).getTime();
-});
+import { Calendar, MapPin, Clock, ExternalLink } from "lucide-react";
+import { getScheduleEvents, ScheduleEvent } from "@/lib/dataStore";
 
 // --- Type Colors ---
 const getTypeStyle = (type: string) => {
@@ -68,6 +23,23 @@ const getTypeStyle = (type: string) => {
 };
 
 const Schedule = () => {
+    const [events, setEvents] = useState<ScheduleEvent[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Load events from admin on mount
+    useEffect(() => {
+        const loadEvents = async () => {
+            const adminEvents = await getScheduleEvents();
+            // Sort by date
+            const sorted = adminEvents.sort((a, b) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
+            setEvents(sorted);
+            setLoading(false);
+        };
+        loadEvents();
+    }, []);
+
     return (
         <Layout>
             {/* Header Section */}
@@ -98,7 +70,7 @@ const Schedule = () => {
             <section className="py-16 bg-background">
                 <div className="container mx-auto px-4 max-w-4xl">
                     <div className="space-y-6">
-                        {sortedEvents.map((event, index) => (
+                        {events.map((event, index) => (
                             <motion.div
                                 key={event.id}
                                 initial={{ opacity: 0, x: -20 }}
@@ -128,6 +100,11 @@ const Schedule = () => {
                                             <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full border ${getTypeStyle(event.type)}`}>
                                                 {event.type}
                                             </span>
+                                            {event.featured && (
+                                                <span className="px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full">
+                                                    Featured
+                                                </span>
+                                            )}
                                         </div>
 
                                         <h3
@@ -165,8 +142,8 @@ const Schedule = () => {
                         ))}
                     </div>
 
-                    {/* Empty State (if needed) */}
-                    {sortedEvents.length === 0 && (
+                    {/* Empty State */}
+                    {events.length === 0 && (
                         <div className="text-center py-20">
                             <Calendar className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
                             <p className="text-muted-foreground">No upcoming events scheduled.</p>
