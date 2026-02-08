@@ -1,8 +1,12 @@
+# robots.txt for Idol Aura Website
+
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
 
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
 
 User-agent: Twitterbot
 Allow: /
@@ -12,3 +16,7 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+
+# Sitemap
+Sitemap: https://intanjkt48.vercel.app/sitemap.xml
