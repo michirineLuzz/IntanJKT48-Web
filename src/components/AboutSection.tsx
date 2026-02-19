@@ -141,7 +141,25 @@ const AboutSection = () => {
       // Use admin data if available, otherwise keep defaults
       if (adminMilestones.length > 0) setMilestones(adminMilestones);
       if (adminFunFacts.length > 0) setFunFacts(adminFunFacts);
-      if (adminHashtags.length > 0) setHashtags(adminHashtags);
+
+      // Merge hashtags: keep defaults + add/override with Supabase data
+      if (adminHashtags.length > 0) {
+        const mergedHashtags = [...defaultHashtags];
+        adminHashtags.forEach((adminTag) => {
+          const existingIndex = mergedHashtags.findIndex(h => h.tag === adminTag.tag);
+          if (existingIndex >= 0) {
+            // Override default with Supabase version
+            mergedHashtags[existingIndex] = adminTag;
+          } else {
+            // New hashtag from admin, append it
+            mergedHashtags.push(adminTag);
+          }
+        });
+        // Sort by order_index
+        mergedHashtags.sort((a, b) => a.order_index - b.order_index);
+        setHashtags(mergedHashtags);
+      }
+
       if (adminStageUnits.length > 0) setStageUnits(adminStageUnits);
     };
     loadData();

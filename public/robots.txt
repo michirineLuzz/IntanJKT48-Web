@@ -1,4 +1,4 @@
-# robots.txt for Idol Aura Website
+# robots.txt for Nur Intan JKT48 Official Website
 
 User-agent: Googlebot
 Allow: /

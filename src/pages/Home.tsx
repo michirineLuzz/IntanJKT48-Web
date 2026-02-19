@@ -1,6 +1,5 @@
 import HeroSection from "@/components/HeroSection";
 import Layout from "@/components/Layout";
-import ScheduleSection from "@/components/ScheduleSection";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Camera, Calendar, Music } from "lucide-react";
@@ -226,9 +225,6 @@ const Home = () => {
                     </motion.div>
                 </div>
             </section>
-
-            {/* Schedule Section */}
-            <ScheduleSection />
 
         </Layout>
     );
