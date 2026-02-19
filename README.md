@@ -1,4 +1,4 @@
-# Idol Aura - Nur Intan JKT48 Fan Website
+# Intan Website Profile - Nur Intan JKT48 Fan Website
 
 A modern, beautiful fan website dedicated to Nur Intan from JKT48's 13th Generation. Built with React, TypeScript, and Framer Motion.
 

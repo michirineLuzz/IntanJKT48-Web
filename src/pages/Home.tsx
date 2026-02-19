@@ -225,7 +225,10 @@ const Home = () => {
                     </motion.div>
                 </div>
             </section>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 27398a5e7a9eeb8765f8b1973a627b38107d0665
         </Layout>
     );
 };
